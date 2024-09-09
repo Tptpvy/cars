@@ -21,3 +21,4 @@ Training tool for eurobeat songs from the anime Initial D. Offers custom presets
 
 **Maybe**
  * Remove specific songs from song selection
+ * Make the interface not look like shit
