@@ -9,8 +9,15 @@ Training tool for eurobeat songs from the anime Initial D. Offers custom presets
   * Sample type selection (Instrumental/Vocal/Namedrop)
   * Answer type selection (Anime title/Song name)
   * Show filter
+  * Points counting system
 
 **To-Do List**
   * GUI
+     * Settings interface: Number of songs (1-all), Checkbox for shows, Answer type, sample type
+     * Gameplay interface: Pause, Replay, Quit, Answer boxes (allow non-strict alternative answers & shortcut answers), Points
   * Song info stored in js files
+  * Get timestamps for samples from Catbox mp3s
   * The actual scripts 🤡
+
+**Maybe**
+ * Remove specific songs from song selection
