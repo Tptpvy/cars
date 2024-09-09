@@ -1,11 +1,111 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <p>test</p>
+  <meta charset="utf-8">
+  <title>EuroGuessr</title>
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 5px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
 
 <body>
-  
+  <h1>EuroGuessr</h1>
+  <button id="openSettings">Open Settings</button>
+  <div id="settings" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Settings</h2>
+      <label for="numOfSongs">Number of Songs:</label>
+      <input type="range" id="numOfSongs" min="1" max="270" value="10">
+      <span id="numOfSongsValue">10</span>
+      <h3>Select Shows:</h3>
+      <div id="showCheckboxes"></div>
+      <label for="answerType">Answering Mode:</label>
+      <select id="answerType">
+        <option value="at1">Anime Title Only</option>
+        <option value="at2">Song Name Only</option>
+        <option value="at3">Both</option>
+      </select>
+      <br>
+      <label for="sampleType">Sample Type:</label>
+      <select id="sampleType">
+        <option value="st1">All</option>
+        <option value="st2">Instrumental</option>
+        <option value="st3">Vocal</option>
+        <option value="st4">Namedrop</option>
+      </select>
+    </div>
+  </div>
+
+  <script>
+    var settingsModal = document.getElementById("settings");
+    var settingsButton = document.getElementById("openSettings");
+    var closeSettings = document.getElementsByClassName("close")[0];
+    var numOfSongs = document.getElementById("numOfSongs");
+    var numOfSongsValue = document.getElementById("numOfSongsValue");
+    var showCheckboxesContainer = document.getElementById("showCheckboxes");
+    var answerType = document.getElementById("answerType");
+    var sampleType = document.getElementById("sampleType");
+
+    var showArray = ["1", "2", "3", "4", "5", "Final", "ES1", "ES2", "BS1", "BS2", "BS3", "Digest", "MF"];
+
+    for (let i = 1; i <= showArray.length; i++) {
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = "show" + i;
+      checkbox.checked = true;
+
+      const label = document.createElement("label");
+      label.htmlFor = checkbox.id;
+      label.textContent = showArray[i-1]
+
+      showCheckboxesContainer.appendChild(checkbox);
+      showCheckboxesContainer.appendChild(label);
+      showCheckboxesContainer.appendChild(document.createElement("br"));
+    }
+    
+    settingsButton.onclick = function() {
+      settingsModal.style.display = "block";
+    }
+
+    closeSettings.onclick = function() {
+      settingsModal.style.display = "none";
+    }
+
+    numOfSongs.oninput = function() {
+      numOfSongsValue.textContent = this.value;
+    }
+  </script>
 </body>
-  
-</html>  
+</html>
