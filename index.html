@@ -36,6 +36,15 @@
       text-decoration: none;
       cursor: pointer;
     }
+    .input-container {
+      display: flex;
+      align-items: center;
+    }
+    input[type="text"] {
+      width: 50px;
+      margin-left: 10px;
+      text-align: center;
+    }
   </style>
 </head>
 
@@ -47,8 +56,10 @@
       <span class="close">&times;</span>
       <h2>Settings</h2>
       <label for="numOfSongs">Number of Songs:</label>
-      <input type="range" id="numOfSongs" min="1" max="270" value="10">
-      <span id="numOfSongsValue">10</span>
+      <div class="input-container">
+        <input type="range" id="numOfSongs" min="1" max="270" value="10">
+        <input type="text" id="numOfSongsText" value="10">
+      </div>
       <p>Select Shows:</p>
       <div id="showCheckboxes"></div>
       <label for="answerType">Answering Mode:</label>
@@ -73,7 +84,7 @@
     var settingsButton = document.getElementById("openSettings");
     var closeSettings = document.getElementsByClassName("close")[0];
     var numOfSongs = document.getElementById("numOfSongs");
-    var numOfSongsValue = document.getElementById("numOfSongsValue");
+    var numOfSongsText = document.getElementById("numOfSongsText");
     var showCheckboxesContainer = document.getElementById("showCheckboxes");
     var answerType = document.getElementById("answerType");
     var sampleType = document.getElementById("sampleType");
@@ -88,7 +99,7 @@
 
       const label = document.createElement("label");
       label.htmlFor = checkbox.id;
-      label.textContent = showArray[i-1]
+      label.textContent = showArray[i-1];
 
       showCheckboxesContainer.appendChild(checkbox);
       showCheckboxesContainer.appendChild(label);
@@ -104,7 +115,16 @@
     }
 
     numOfSongs.oninput = function() {
-      numOfSongsValue.textContent = this.value;
+      numOfSongsText.value = this.value;
+    }
+
+    numOfSongsText.oninput = function() {
+      const value = Number(this.value);
+      if (value >= 1 && value <= 270) {
+        numOfSongs.value = value;
+      } else {
+        this.value = numOfSongs.value; // Reset to range value if out of bounds
+      }
     }
   </script>
 </body>
