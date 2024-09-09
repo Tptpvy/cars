@@ -62,13 +62,14 @@
       </div>
       <p>Select Shows:</p>
       <div id="showCheckboxes"></div>
+      <br>
       <label for="answerType">Answering Mode:</label>
       <select id="answerType">
         <option value="at1">Anime Title Only</option>
         <option value="at2">Song Name Only</option>
         <option value="at3">Both</option>
       </select>
-      <br>
+      <br><br>
       <label for="sampleType">Sample Type:</label>
       <select id="sampleType">
         <option value="st1">All</option>
@@ -78,7 +79,12 @@
       </select>
     </div>
   </div>
-
+  <br><br>
+  <div id="startQuiz">
+    <input type="button" id="startQuiz" value="Start Quiz">
+    </input>
+  </div>
+  
   <script>
     var settingsModal = document.getElementById("settings");
     var settingsButton = document.getElementById("openSettings");
@@ -88,6 +94,7 @@
     var showCheckboxesContainer = document.getElementById("showCheckboxes");
     var answerType = document.getElementById("answerType");
     var sampleType = document.getElementById("sampleType");
+    var startQuiz = document.getElementById("startQuiz");
 
     var showArray = ["1", "2", "3", "4", "5", "Final", "ES1", "ES2", "BS1", "BS2", "BS3", "Digest", "MF"];
 
@@ -123,7 +130,7 @@
       if (value >= 1 && value <= 270) {
         numOfSongs.value = value;
       } else {
-        this.value = numOfSongs.value; // Reset to range value if out of bounds
+        this.value = numOfSongs.value;
       }
     }
   </script>
