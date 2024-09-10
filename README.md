@@ -14,11 +14,13 @@ Training tool for eurobeat songs from the anime Initial D. Offers custom presets
 **To-Do List**
   * GUI
      * Settings interface: Number of songs (1-all), Checkbox for shows, Answer type, Sample type
-     * Gameplay interface: Pause, Replay, Quit, Answer boxes (allow non-strict alternative answers & shortcut answers), Points, Volume, Skip
-  * Store song info in json (Only eurobeat & those 2 weird s4,5 songs, idk if move counts)
+     * Gameplay interface: Pause, Replay, Quit, Answer boxes (allow non-strict alternative answers & shortcut answers),
+                           Points, Volume, Skip, Display gamemode selected
+  * Store song info in json (Only eurobeat)
   * Get timestamps for samples from Catbox mp3s
   * The actual scripts 🤡
 
 **Maybe**
  * Remove specific songs from song selection
  * Make the interface not look like shit
+ * Allow user to play a different sample
