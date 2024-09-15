@@ -55,15 +55,23 @@ const quiz = {
     const data = this.songData[nextSongIndex];
     const url = config.BASE_URL + data.mp3;
     log.debug(`Loading song from url:\n ${url}`)
-    let sound = new Howl({ src: [url], html5: true });
+    let sound = new Howl({ src: [url], html5: true, loop: true });
     const song = {
       sound,
       songname: data.songname,
       artist: data.artist,
       show: data.romaji,
+      sample: null,
     };
     sound.on("load", () => {
-      log.debug(`Loaded song from url: ${url}`)
+      log.debug(`Loaded song from url: ${url}`);
+      // for now just do random samples
+      // TODO: take the config from the settings and the file
+      let songLength = sound.duration();
+      let startSample = Math.random() * songLength;
+      sound.seek(startSample);
+      song.sample = [startSample, songLength];
+
       if (song.onready) {
         song.onready();
       } else {
@@ -511,13 +519,23 @@ function initQuizUi(dropdown) {
   const artist = document.getElementById("qiArtist");
   const anime = document.getElementById("qiAnime");
   const answered = document.getElementById("qiAnswered");
+  const sample = document.getElementById("qiSample");
+  const formatTime = function(total) {
+    const minutes = Math.round(total / 60.0);
+    const seconds = Math.round(total % 60.0);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
   quiz.updateResults = function (answer) {
     const correct = _updateResults.apply(this, [answer]);
-    songname.innerHTML = quiz.currSong.songname;
-    artist.innerHTML = quiz.currSong.artist;
-    anime.innerHTML = quiz.currSong.show;
+    const song = quiz.currSong;
+    songname.innerHTML = song.songname;
+    artist.innerHTML = song.artist;
+    anime.innerHTML = song.show;
     answered.innerHTML = answer;
     answered.className = correct ? "has-text-success" : "has-text-danger";
+    if (song.sample !== null) {
+      sample.innerHTML = `${formatTime(song.sample[0])}/${formatTime(song.sample[1])}`;
+    }
     return correct;
   };
 
