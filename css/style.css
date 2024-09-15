@@ -1,0 +1,71 @@
+.modal {
+  --bulma-modal-background-background-color: rgba(0, 0, 0, 0.5);
+}
+
+.settings .header {
+  display: flex;
+}
+
+.settings .header .subtitle {
+  flex-grow: 1;
+  flex-shrink: 0;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#numOfSongsText {
+  pointer-events: all;
+}
+
+.select-label {
+  display: inline-block;
+}
+
+.dropdown {
+  width: 100%;
+}
+
+.dropdown-trigger {
+  width: 100%;
+}
+
+a.dropdown-item:hover, a.dropdown-item.selected {
+  --bulma-dropdown-item-background-l-delta: var(--bulma-dropdown-item-hover-background-l-delta);
+  --bulma-dropdown-item-border-l-delta: var(--bulma-dropdown-item-hover-border-l-delta);
+}
+
+.list {
+  height: 75vh;
+  overflow-y: auto;
+}
+.list-item:nth-child(odd) { background-color:  hsl(0, 0%, 96%); }
+
+.quiz-info {
+  display: flex;
+}
+
+.quiz-info div {
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+#endQuiz {
+  flex-grow: 0;
+}
