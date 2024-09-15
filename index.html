@@ -3,136 +3,105 @@
 <head>
   <meta charset="utf-8">
   <title>EuroGuessr</title>
-  <style>
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-    .modal-content {
-      background-color: #fefefe;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
-      max-width: 400px;
-      border-radius: 5px;
-    }
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-    }
-    .close:hover,
-    .close:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .input-container {
-      display: flex;
-      align-items: center;
-    }
-    input[type="text"] {
-      width: 50px;
-      margin-left: 10px;
-      text-align: center;
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+  <link rel="stylesheet" href="/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
-  <h1>EuroGuessr</h1>
-  <button id="openSettings">Open Settings</button>
-  <div id="settings" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Settings</h2>
-      <label for="numOfSongs">Number of Songs:</label>
-      <div class="input-container">
-        <input type="range" id="numOfSongs" min="1" max="270" value="10">
-        <input type="text" id="numOfSongsText" value="10">
+  <section class="section columns">
+    <div class="container column">
+      <h1 class="title">EuroGuessr</h1>
+      <article id="errorMessage" class="message is-danger" style="display: none;">
+        <div class="message-body">
+        </div>
+      </article>
+      <div id="quiz-setup">
+        <div class="pb-2">
+          <button id="openSettings" class="button is-light">Open Settings</button>
+        </div>
+        <div class="pb-2">
+          <button id="startQuiz" class="button is-light" style="display: none;">Start Quiz</button>
+        </div>
       </div>
-      <p>Select Shows:</p>
-      <div id="showCheckboxes"></div>
-      <br>
-      <label for="answerType">Answering Mode:</label>
-      <select id="answerType">
-        <option value="at1">Anime Title Only</option>
-        <option value="at2">Song Name Only</option>
-        <option value="at3">Both</option>
-      </select>
-      <br><br>
-      <label for="sampleType">Sample Type:</label>
-      <select id="sampleType">
-        <option value="st1">All</option>
-        <option value="st2">Instrumental</option>
-        <option value="st3">Vocal</option>
-        <option value="st4">Namedrop</option>
-      </select>
+      <div id="quiz" style="display: none;">
+        <div class="pb-2">
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title">Quiz</p>
+            </header>
+            <div class="card-content">
+              <div class="content quiz-info">
+                <div>
+                  <div>Score: <span id="qiScore"></span></div>
+                  <div>Total Songs: <span id="qiTotalSongs"></span></div>
+                  <div>Pool Size: <span id="qiPoolSize"></span></div>
+                  <hr>
+                  <div class="has-text-weight-semibold is-size-5">Previous Song</div>
+                  <div>Song Name: <span id="qiSongName"></span></div>
+                  <div>Artist: <span id="qiArtist"></span></div>
+                  <div>Anime: <span id="qiAnime"></span></div>
+                  <div><span id="qiAnswered"></span></div>
+                </div>
+                <div id="endQuiz"><button class="button is-light">End Quiz</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="dropdown pt-2 pb-2" id="dropdownDiv">
+          <div class="dropdown-trigger">
+            <input type="text" class="input" id="dropdownInput"></input>
+          </div>
+          <div class="dropdown-menu" role="menu">
+            <div class="dropdown-content" id="dropdownContent">
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-  <br><br>
-  <div id="startQuiz">
-    <input type="button" id="startQuiz" value="Start Quiz">
-    </input>
-  </div>
-  
-  <script>
-    var settingsModal = document.getElementById("settings");
-    var settingsButton = document.getElementById("openSettings");
-    var closeSettings = document.getElementsByClassName("close")[0];
-    var numOfSongs = document.getElementById("numOfSongs");
-    var numOfSongsText = document.getElementById("numOfSongsText");
-    var showCheckboxesContainer = document.getElementById("showCheckboxes");
-    var answerType = document.getElementById("answerType");
-    var sampleType = document.getElementById("sampleType");
-    var startQuiz = document.getElementById("startQuiz");
-
-    var showArray = ["1", "2", "3", "4", "5", "Final", "ES1", "ES2", "BS1", "BS2", "BS3", "Digest", "MF"];
-
-    for (let i = 1; i <= showArray.length; i++) {
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.id = "show" + i;
-      checkbox.checked = true;
-
-      const label = document.createElement("label");
-      label.htmlFor = checkbox.id;
-      label.textContent = showArray[i-1];
-
-      showCheckboxesContainer.appendChild(checkbox);
-      showCheckboxesContainer.appendChild(label);
-      showCheckboxesContainer.appendChild(document.createElement("br"));
-    }
-    
-    settingsButton.onclick = function() {
-      settingsModal.style.display = "block";
-    }
-
-    closeSettings.onclick = function() {
-      settingsModal.style.display = "none";
-    }
-
-    numOfSongs.oninput = function() {
-      numOfSongsText.value = this.value;
-    }
-
-    numOfSongsText.oninput = function() {
-      const value = Number(this.value);
-      if (value >= 1 && value <= 270) {
-        numOfSongs.value = value;
-      } else {
-        this.value = numOfSongs.value;
-      }
-    }
-  </script>
+    <div class="container column is-one-third box p-0" id="log-pane">
+      <div class="label pt-4 pl-4">Log</div>
+      <div class="list" id="log-list">
+      </div>
+    </div>
+    <div id="settings" class="modal">
+      <div class="modal-background"></div>
+      <div class="settings modal-content box mt-6">
+        <div class="header mt-4">
+          <h2 class="subtitle">Settings</h2>
+          <button class="close">&times;</button>
+        </div>
+        <div>
+          <label class="label is-small" for="numOfSongs">Number of Songs:</label>
+          <div class="control">
+            <input class="slider is-fullwidth is-circle has-output" type="range" id="numOfSongs">
+            <output for="numOfSongs" type="text" id="numOfSongsText" contenteditable="true"></output>
+          </div>
+          <p class="label is-small">Select Shows:</p>
+          <div id="showCheckboxes"></div>
+          <br>
+          <div>
+            <label class="label is-small select-label" for="answerType">Answering Mode:</label>
+            <select id="answerType">
+              <option value="at1">Anime Title Only</option>
+              <option value="at2">Song Name Only</option>
+              <option value="at3">Both</option>
+            </select>
+          </div>
+          <br/>
+          <div>
+            <label class="label is-small select-label" for="sampleType">Sample Type:</label>
+            <select id="sampleType">
+              <option value="st1">All</option>
+              <option value="st2">Instrumental</option>
+              <option value="st3">Vocal</option>
+              <option value="st4">Namedrop</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script type="text/javascript" src="/js/howler.core.min.js"></script>
+  <script type="text/javascript" src="/js/index.js"></script>
 </body>
 </html>
