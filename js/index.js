@@ -11,7 +11,7 @@ const setMessage = (function () {
 const config = {
   DEFAULT_NUM_SONGS: 10,
   DD_MAX_ENTRIES: 10,
-  BASE_URL: "https://files.catbox.moe/",
+  BASE_URL: "https://naedist.animemusicquiz.com/", // Other URLs: https://files.catbox.moe/
   USE_LOG: true,
   DEBUG: false,
 };
