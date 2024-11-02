@@ -524,6 +524,11 @@ async function retrieveTimestamp(data, sampleType) {
         const matchingSample = samples.find(sample => sample["Song Name"] === data.songname);
 
         if (matchingSample) {
+            if (sampleType === "All") {
+              const sampleTypes = ["Instr1", "Vocal1", "Ndrop1"];
+              const randomIndex = Math.floor(Math.random() * sampleTypes.length);
+              sampleType = sampleTypes[randomIndex];
+            } 
             return matchingSample[sampleType] || null;
         } else {
             log.warn(`No sample timestamp found for: ${data.songname}`);
