@@ -55,7 +55,7 @@ const quiz = {
     const data = this.songData[nextSongIndex];
     const url = config.BASE_URL + data.mp3;
     log.debug(`Loading song from url:\n ${url}`)
-    let sound = new Howl({ src: [url], html5: true, loop: true });
+    let sound = new Howl({ src: [url], html5: true, loop: true }); // loop set to false, only loop the sample on command (additional button)
     const song = {
       sound,
       songname: data.songname,
@@ -67,8 +67,15 @@ const quiz = {
       log.debug(`Loaded song from url: ${url}`);
       // for now just do random samples
       // TODO: take the config from the settings and the file
-      let songLength = sound.duration();
-      let startSample = Math.random() * songLength;
+/*    
+      const sampleType = document.getElementById("sampleType").value;  
+      const timestamp = retrieveTimestamp(data, sampleType);
+      const { startSample, endSample } = splitTimestamp(timestamp);
+      const duration = calculateDuration(startSample, endSample);
+*/
+
+      let songLength = sound.duration(); // = duration (in seconds)
+      let startSample = Math.random() * songLength; // = startSample
       sound.seek(startSample);
       song.sample = [startSample, songLength];
 
@@ -128,6 +135,7 @@ const quiz = {
     this.currSong = null;
     this.nextSong = null;
     this.remainingSongs = null;
+    // this.songPool = null; To stop loading songs when quiz ends early (remainingSongs variable not used)
   },
   _next: function() {
     if (this.currSong && this.currSong.sound) {
@@ -177,8 +185,8 @@ const settings = {
 };
 
 var answerType = document.getElementById("answerType");
-var sampleType = document.getElementById("sampleType");
-var startQuiz = document.getElementById("startQuiz");
+var sampleType = document.getElementById("sampleType"); // redundant?
+var startQuiz = document.getElementById("startQuiz"); // redundant?
 
 const initLogger = function() {
   const divLog = document.getElementById("log-pane");
@@ -458,6 +466,96 @@ async function fetchSongData() {
       throw error;
   }
 }
+
+/*
+async function fetchSampleData() {
+    log.info("Fetching sample timestamps");
+    try {
+        const response = await fetch("cars sample.csv")
+        if (!response.ok) {
+            let message = await response.text();
+            throw new Error(`Response status ${response.status}: ${message}`);
+    } 
+
+    const samplesText = await response.text();
+    const samples = parseCSV(text);
+    log.info(`Loaded sample timestamps of ${songs.length} songs`);
+    return samples;
+  } catch (error) {
+      log.error(error.message);
+      throw error;
+  }
+}
+
+function parseCSV(data) {
+    const lines = data.split('\n');
+    const headers = lines[0].split(',');
+    
+    return lines.slice(1).map(line => {
+        const values = line.split(',');
+        return headers.reduce((obj, header, index) => {
+            obj[header.trim()] = values[index]?.trim();
+            return obj;
+        }, {});
+    });
+}
+
+// Sample output: 
+[
+    {
+        "Anime Name": "Initial D",
+        "Song Name": "SPACE BOY",
+        "Instr1": "0:17-0:27",
+        "Vocal1": "0:29-0:49",
+        "Ndrop1": "0:54-0:59"
+    },
+    {
+        "Anime Name": "Initial D",
+        "Song Name": "NO ONE SLEEP IN TOKYO",
+        "Instr1": "0:31-0:41",
+        "Vocal1": "0:43-1:03",
+        "Ndrop1": "1:11-1:16"
+    }
+]
+
+async function retrieveTimestamp(data, sampleType) {
+    try {
+        const samples = await fetchSampleData(); 
+        const matchingSample = samples.find(sample => sample["Song Name"] === data.songname);
+
+        if (matchingSample) {
+            return matchingSample[sampleType] || null;
+        } else {
+            log.warn(`No sample timestamp found for: ${data.songname}`);
+            return null; 
+        }
+    } catch (error) {
+        log.error(`Error retrieving sample timestamp: ${error.message}`);
+        throw error;
+    }
+}
+
+function splitTimestamp(timestamp) {
+    const [startSample, endSample] = timestamp.split('-');
+    return {
+        startSample: startSample.trim(), 
+        endSample: endSample.trim()
+    };
+}
+
+function convertToSeconds(timestamp) {
+    const [minutes, seconds] = timestamp.split(':').map(Number);
+    return (minutes * 60) + seconds;
+}
+
+function calculateDuration(startSample, endSample) {
+    const startSeconds = convertToSeconds(startSample);
+    const endSeconds = convertToSeconds(endSample);
+    const durationInSeconds = endSeconds - startSeconds;
+
+    return durationInSeconds; 
+}
+*/
 
 function initQuizUi(dropdown) {
   const btnStartQuiz = document.getElementById("startQuiz");
