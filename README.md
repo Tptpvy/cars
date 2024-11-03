@@ -17,8 +17,15 @@ Training tool for eurobeat songs from the anime Initial D. Offers custom presets
                            Points, Volume, Skip, Display gamemode selected
   * Include MF Ghost Season 2
   * Check for duplicated songs
+  * Sound normalization
+  * Total number of songs settings not working
+  * Hide dropdown if no user input
+  * Check/uncheck all option in settings
+  * Clear "The quiz is over." message after end quiz
 
 **Maybe**
  * Remove specific songs from song selection
  * Make the interface not look like shit
  * Allow users to play a different sample
+ * Song history
+ * Allow users to play the full song with random start samples (except last 20 seconds)
