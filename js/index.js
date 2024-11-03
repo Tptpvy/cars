@@ -13,7 +13,7 @@ const config = {
   DD_MAX_ENTRIES: 10,
   BASE_URL: "https://naedist.animemusicquiz.com/", // Other URLs: https://files.catbox.moe/
   USE_LOG: true,
-  DEBUG: false,
+  DEBUG: true,
 };
 
 const quiz = {
@@ -43,7 +43,7 @@ const quiz = {
     this._updatePlayed(0);
     log.info(`Starting quiz.`);
   },
-  loadNextSong: function() {
+  loadNextSong: async function() {
     if (this.songPool.length == 0) {
       return;
     }
@@ -63,28 +63,33 @@ const quiz = {
       show: data.romaji,
       sample: null,
     };
+    sampleType = document.getElementById("sampleType").value;
+    [ startSample, endSample ] = ["0:00", "0:02"] // default values
+    duration = 2 // default value
+    try {
+      [ startSample, endSample ] = await retrieveTimestamp(song.songname, sampleType);
+      if (startSample && endSample) {
+          duration = calculateDuration(startSample, endSample);
+          
+      } else {
+          console.warn('Start or end sample is undefined.');
+      }
+    } catch (error) {
+        console.error('Error retrieving timestamp:', error.message);
+    }
+    
     sound.on("load", () => {
       log.debug(`Loaded song from url: ${url}`);
-      // for now just do random samples
-      // TODO: take the config from the settings and the file
-/*    
-      const sampleType = document.getElementById("sampleType").value;  
-      const timestamp = retrieveTimestamp(data, sampleType);
-      const { startSample, endSample } = splitTimestamp(timestamp);
-      const duration = calculateDuration(startSample, endSample);
-*/
-
-      let songLength = sound.duration(); // = duration (in seconds)
-      let startSample = Math.random() * songLength; // = startSample
-      sound.seek(startSample);
+      // let songLength = sound.duration(); // = duration (in seconds)
+      // let startSample = Math.random() * songLength; // = startSample
+      let songLength = duration; // Use the calculated duration
+      sound.seek(startSample); // Seek to the start sample
       song.sample = [startSample, songLength];
-
       if (song.onready) {
-        song.onready();
+          song.onready();
       } else {
-        song.ready = true;
-      }
-    });
+          song.ready = true;
+    }});
     sound.on("loaderror", (_id, errorId) => {
       log.error(`Error loading ${data.songname} (${data.mp3}): ${errorId}`);
       quiz.loadNextSong();
@@ -134,8 +139,7 @@ const quiz = {
     }
     this.currSong = null;
     this.nextSong = null;
-    this.remainingSongs = null;
-    // this.songPool = null; To stop loading songs when quiz ends early (remainingSongs variable not used)
+    this.songPool = null;
   },
   _next: function() {
     if (this.currSong && this.currSong.sound) {
@@ -467,19 +471,19 @@ async function fetchSongData() {
   }
 }
 
-/*
+
 async function fetchSampleData() {
     log.info("Fetching sample timestamps");
     try {
-        const response = await fetch("cars sample.csv")
+        const response = await fetch("cars samples.csv")
         if (!response.ok) {
             let message = await response.text();
             throw new Error(`Response status ${response.status}: ${message}`);
     } 
 
     const samplesText = await response.text();
-    const samples = parseCSV(text);
-    log.info(`Loaded sample timestamps of ${songs.length} songs`);
+    const samples = parseCSV(samplesText);
+    log.info(`Loaded sample timestamps`);
     return samples;
   } catch (error) {
       log.error(error.message);
@@ -500,7 +504,7 @@ function parseCSV(data) {
     });
 }
 
-// Sample output: 
+/* Sample output: 
 [
     {
         "Anime Name": "Initial D",
@@ -517,19 +521,19 @@ function parseCSV(data) {
         "Ndrop1": "1:11-1:16"
     }
 ]
+*/
 
-async function retrieveTimestamp(data, sampleType) {
+async function retrieveTimestamp(songname, sampleType) {
     try {
-        const samples = await fetchSampleData(); 
-        const matchingSample = samples.find(sample => sample["Song Name"] === data.songname);
-
+        const samples = await fetchSampleData();
+        const matchingSample = samples.find(sample => sample["Song Name"] === songname);
         if (matchingSample) {
             if (sampleType === "All") {
               const sampleTypes = ["Instr1", "Vocal1", "Ndrop1"];
               const randomIndex = Math.floor(Math.random() * sampleTypes.length);
               sampleType = sampleTypes[randomIndex];
-            } 
-            return matchingSample[sampleType] || null;
+            }
+            return String(matchingSample[sampleType]).split('-') || null;
         } else {
             log.warn(`No sample timestamp found for: ${data.songname}`);
             return null; 
@@ -538,14 +542,6 @@ async function retrieveTimestamp(data, sampleType) {
         log.error(`Error retrieving sample timestamp: ${error.message}`);
         throw error;
     }
-}
-
-function splitTimestamp(timestamp) {
-    const [startSample, endSample] = timestamp.split('-');
-    return {
-        startSample: startSample.trim(), 
-        endSample: endSample.trim()
-    };
 }
 
 function convertToSeconds(timestamp) {
@@ -560,7 +556,6 @@ function calculateDuration(startSample, endSample) {
 
     return durationInSeconds; 
 }
-*/
 
 function initQuizUi(dropdown) {
   const btnStartQuiz = document.getElementById("startQuiz");
